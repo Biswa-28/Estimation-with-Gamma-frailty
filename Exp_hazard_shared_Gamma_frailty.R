@@ -1,16 +1,20 @@
-lambda_vec_1 <- c(2.4,5.8)
-lambda_vec_2 <- c(3.5,4.5)    # lambda_vec_2 <-c(3.5,4.5) is a good choice
+## true value for Exponential baseline cause-specific hazard function of the first individual
+lambda_vec_1 <- c(2.4,5.8)    
+## true value for Exponential baseline cause-specific hazard function of the second individual
+lambda_vec_2 <- c(3.5,4.5)   
+## true value of Gamma frailty's dispersion parameter
 sigma <- 0.95
 lambda_1 <- sum(lambda_vec_1)
 lambda_2 <- sum(lambda_vec_2)
-p_cen <- 0.1
-## integrand for joint survival
+### setting the value of joint censoring probability as 0.1
+p_cen <- 0.1 
+## Integrand for joint survival function
 integrand_1 <- function(x,mu,mu_1,mu_2,tau)
 {
   return(dexp(x,rate=mu)/((1 + (x*mu_1*tau)
                            + (x*mu_2*tau))^(1/tau)))
 }
-## integrand for marginal survival
+## Integrand for marginal survival
 integrand_2 <- function(x,mu,mu_1,tau)
 {
   return(dexp(x,rate=mu)*((1 + (tau*x*mu_1))^(-(1/tau))))
@@ -23,6 +27,7 @@ f_1 <- function(mu)
 }
 ## solution of mu_hat
 mu_hat <- nleqslv::nleqslv(0,f_1)$x
+### some little calculations
 L_1 <- length(lambda_vec_1)
 L_2 <- length(lambda_vec_2)
 p_1 <- (lambda_vec_1)/lambda_1
@@ -64,7 +69,7 @@ data_gen <- function(n,tau,mu_1,mu_2,
               q_1=q_4,q_2=q_5,q_3=q_6)
   return(cbind(mon_time,t(F)))
 }
-## frequency table from observed data
+## Frequency table from observed data
 freq_cause <- function(D,L_1,L_2)
 {
   n <- nrow(D)
@@ -118,8 +123,7 @@ exp_indiv_log_likelihood <- function(data,mu_1,mu_2,
     return(log(surv_joint))
   }
 }
-## the overall negative log-likelihood function which is
-## to minimize
+## the overall negative log-likelihood function which is needed to minimize
 neg_log_likelihood_exp <- function(D,theta,M_1,M_2)
 {
   lambda_vec_3 <- theta[1:M_1]
@@ -222,7 +226,7 @@ coverage_prob_1 <- function(theta_hat,theta_0,s)
   return(ifelse((theta_0 > theta_hat - (s*1.96)) &&
                   (theta_0 < theta_hat + (s*1.96)),1,0))
 }
-## function for coverage probability
+## function for asymptotic coverage probability
 coverage_prob <- function(theta_hat_vec,theta_0_vec,sd_vec)
 {
   p <- replicate(5,0)
