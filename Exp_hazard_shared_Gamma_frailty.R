@@ -277,5 +277,6 @@ output_matrix <- rbind(bias,sample_se,asymptotic_se,coverage_prob_vec)
 rownames(output_matrix) <- name
 colnames(output_matrix) <- c(sapply(1:L_1,create_estimate_name,k=1),
                              sapply(1:L_2,create_estimate_name,k=2),"sigma_hat")
+#### to create .csv file of the simulation output  
 write.csv(output_matrix,paste("sample size = ",toString(n),"&",
                               "censoring prob = ",toString(p_cen),"_alternate",".csv"))
